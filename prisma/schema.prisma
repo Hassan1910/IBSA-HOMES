@@ -1,0 +1,165 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  AGENT
+  TENANT
+  LANDLORD
+}
+
+model Organization {
+  id                 String   @id @default(uuid())
+  name               String
+  paystackCustomerCode String?   @unique
+  subscriptionStatus String   @default("TRIAL") // TRIAL, ACTIVE, PAST_DUE, CANCELED
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  users              User[]
+  properties         Property[]
+  tenantProfiles     TenantProfile[]
+  bookings           Booking[]
+  maintenance        MaintenanceRequest[]
+  payments           Payment[]
+  systemSettings     SystemSettings?
+}
+
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  password       String
+  name           String?
+  role           UserRole @default(TENANT)
+  
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  tenantProfile     TenantProfile?
+  managedProperties Property[]     @relation("AgentProperties")
+  ownedProperties   Property[]     @relation("LandlordProperties")
+  bookings          Booking[]
+  maintenance       MaintenanceRequest[]
+}
+
+model Property {
+  id             String   @id @default(uuid())
+  title          String
+  description    String?
+  address        String
+  price          Decimal
+  status         String   @default("AVAILABLE") // AVAILABLE, RENTED, MAINTAINANCE
+  bedrooms       Int
+  bathrooms      Int
+  area           Float?
+  images         String[] // Store URLs
+  
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Relations
+  agentId        String?
+  agent          User?    @relation("AgentProperties", fields: [agentId], references: [id])
+  ownerId        String?
+  owner          User?    @relation("LandlordProperties", fields: [ownerId], references: [id])
+  tenants        TenantProfile[]
+  bookings       Booking[]
+  maintenance    MaintenanceRequest[]
+}
+
+model TenantProfile {
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id])
+  phone          String?
+  leaseStartDate DateTime?
+  leaseEndDate   DateTime?
+  
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  
+  propertyId     String?
+  property       Property? @relation(fields: [propertyId], references: [id])
+  
+  payments       Payment[]
+}
+
+model Booking {
+  id             String   @id @default(uuid())
+  
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  
+  propertyId     String
+  property       Property @relation(fields: [propertyId], references: [id])
+  userId         String?
+  user           User?    @relation(fields: [userId], references: [id])
+  visitorName    String? // If not a registered user
+  visitorContact String?
+  date           DateTime
+  status         String   @default("PENDING") // PENDING, CONFIRMED, CANCELLED, COMPLETED
+  createdAt      DateTime @default(now())
+}
+
+model MaintenanceRequest {
+  id             String   @id @default(uuid())
+  description    String
+  status         String   @default("OPEN") // OPEN, IN_PROGRESS, RESOLVED
+  cost           Decimal?
+  
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  
+  propertyId     String
+  property       Property @relation(fields: [propertyId], references: [id])
+  
+  reporterId     String
+  reporter       User     @relation(fields: [reporterId], references: [id])
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Payment {
+  id             String   @id @default(uuid())
+  amount         Decimal
+  date           DateTime @default(now())
+  type           String   // RENT, DEPOSIT, FEE
+  status         String   @default("COMPLETED")
+  reference      String?  @unique
+  gateway        String   @default("PAYSTACK")
+  
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  
+  tenantId       String
+  tenant         TenantProfile @relation(fields: [tenantId], references: [id])
+}
+
+model SystemSettings {
+  id             String   @id @default(uuid())
+  companyName    String   @default("IBSA Homes")
+  supportEmail   String?
+  supportPhone   String?
+  currency       String   @default("USD")
+  
+  organizationId String   @unique // One settings profile per organization
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  
+  updatedAt      DateTime @updatedAt
+}
