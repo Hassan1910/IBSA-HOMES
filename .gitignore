@@ -49,3 +49,4 @@ next-env.d.ts
 *.docx
 *.txt
 *.text
+*.py
