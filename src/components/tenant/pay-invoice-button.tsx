@@ -33,6 +33,7 @@ export default function PayInvoiceButton({
             reference,
             email,
             amount: Math.round(amount * 100), // convert to smallest unit
+            currency: "KES",
             publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY as string,
         });
     }

@@ -118,7 +118,7 @@ export default function PropertySearch() {
                     <div className="flex justify-between">
                         <Label>Price Range</Label>
                         <span className="text-xs text-slate-500">
-                            ${minPrice} - ${maxPrice}
+                            KES {minPrice} - KES {maxPrice}
                         </span>
                     </div>
                     <Slider

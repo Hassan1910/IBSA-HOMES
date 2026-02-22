@@ -45,6 +45,7 @@ export default function MakePaymentButton() {
                     reference: res.payment.reference,
                     email: res.email,
                     amount: Math.round(Number(amount) * 100), // kobo
+                    currency: "KES",
                     publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY as string,
                 });
             } else {
@@ -100,7 +101,7 @@ export default function MakePaymentButton() {
                 </DialogHeader>
                 <div className="space-y-4 py-4">
                     <div className="space-y-2">
-                        <Label htmlFor="amount">Amount ($)</Label>
+                        <Label htmlFor="amount">Amount (KES)</Label>
                         <Input
                             id="amount"
                             type="number"

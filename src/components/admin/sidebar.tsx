@@ -14,6 +14,8 @@ import {
     Building,
     CreditCard,
     Receipt,
+    Package,
+    HeartHandshake,
 } from "lucide-react";
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> { }
@@ -57,6 +59,18 @@ export function AdminSidebar({ className }: SidebarProps) {
             icon: Settings,
             href: "/admin/settings",
             active: pathname.startsWith("/admin/settings"),
+        },
+        {
+            label: "Inventory",
+            icon: Package,
+            href: "/admin/inventory",
+            active: pathname.startsWith("/admin/inventory"),
+        },
+        {
+            label: "Support",
+            icon: HeartHandshake,
+            href: "/admin/support",
+            active: pathname.startsWith("/admin/support"),
         },
         /* {
             label: "Billing",

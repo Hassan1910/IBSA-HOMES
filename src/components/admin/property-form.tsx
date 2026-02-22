@@ -153,7 +153,7 @@ export default function PropertyForm({
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="price">Price ($/month)</Label>
+                    <Label htmlFor="price">Price (KES/month)</Label>
                     <Input id="price" type="number" {...register('price')} />
                     {errors.price && <p className="text-sm text-red-500">{errors.price.message}</p>}
                 </div>

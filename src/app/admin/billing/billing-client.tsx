@@ -22,7 +22,8 @@ export default function BillingClient({ organization, userEmail, paystackPublicK
     const config = {
         reference: `sub_${new Date().getTime()}_${organization.id}`,
         email: userEmail,
-        amount: 5000000, // E.g. $50 or 50,000 NGN. Actually, the amount is overridden by the plan if standard, but required by SDK. Set to 50000 ($50)
+        amount: 5000000, // E.g. KES 50 or 50,000 NGN. Actually, the amount is overridden by the plan if standard, but required by SDK. Set to 50000 (KES 50)
+        currency: "KES",
         publicKey: paystackPublicKey,
         plan: proPlanCode,
         metadata: {
@@ -68,7 +69,7 @@ export default function BillingClient({ organization, userEmail, paystackPublicK
                     Get unlimited properties, advanced analytics, and priority support.
                 </p>
                 <div className="text-3xl font-bold">
-                    $50 <span className="text-sm text-muted-foreground font-normal">/ month</span>
+                    KES 50 <span className="text-sm text-muted-foreground font-normal">/ month</span>
                 </div>
 
                 {organization.subscriptionStatus === "ACTIVE" ? (

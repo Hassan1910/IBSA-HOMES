@@ -14,7 +14,14 @@ export default async function AgentDashboard() {
             agentId: session?.user?.id,
         },
         include: {
-            tenants: true
+            tenants: true,
+            maintenance: {
+                where: {
+                    status: {
+                        in: ['OPEN', 'IN_PROGRESS'] // only active requests
+                    }
+                }
+            }
         },
         orderBy: {
             createdAt: 'desc'
@@ -24,6 +31,9 @@ export default async function AgentDashboard() {
     const totalProperties = properties.length;
     // Calculate total tenants across all assigned properties
     const totalTenants = properties.reduce((acc, prop) => acc + prop.tenants.length, 0);
+
+    // Calculate total active maintenance requests
+    const activeMaintenance = properties.reduce((acc, prop) => acc + prop.maintenance.length, 0);
 
     // Basic stats for available vs rented
     const availableProperties = properties.filter(p => p.status === 'AVAILABLE').length;
@@ -91,15 +101,17 @@ export default async function AgentDashboard() {
                 <Card className="hover:shadow-md transition-shadow relative overflow-hidden group">
                     <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-amber-500 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">Maintenance</CardTitle>
+                        <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">Active Maintenance</CardTitle>
                         <div className="h-8 w-8 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
                             <Activity className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-slate-900 dark:text-white">0</div>
-                        <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 flex items-center font-medium">
-                            Coming Soon
+                        <div className="text-3xl font-bold text-slate-900 dark:text-white">{activeMaintenance}</div>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center font-medium">
+                            <Link href="/agent/maintenance" className="hover:text-amber-600 dark:hover:text-amber-400 transition-colors flex flex-row items-center">
+                                View Requests <ExternalLink className="h-3 w-3 ml-1" />
+                            </Link>
                         </p>
                     </CardContent>
                 </Card>
@@ -156,7 +168,7 @@ export default async function AgentDashboard() {
                                                 </p>
                                                 <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
                                                 <p className="text-xs font-medium text-slate-700 dark:text-slate-300 hidden sm:inline">
-                                                    ${Number(property.price).toLocaleString()}
+                                                    KES {Number(property.price).toLocaleString()}
                                                 </p>
                                             </div>
                                         </div>

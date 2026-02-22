@@ -31,6 +31,11 @@ export default withAuth(
         if (path.startsWith("/landlord") && token?.role !== "LANDLORD" && token?.role !== "ADMIN") {
             return NextResponse.redirect(new URL("/", req.url));
         }
+
+        // Booking Officer routes protection
+        if (path.startsWith("/booking-officer") && token?.role !== "BOOKING_OFFICER" && token?.role !== "ADMIN") {
+            return NextResponse.redirect(new URL("/", req.url));
+        }
     },
     {
         callbacks: {
@@ -40,5 +45,5 @@ export default withAuth(
 );
 
 export const config = {
-    matcher: ["/admin/:path*", "/agent/:path*", "/tenant/:path*", "/landlord/:path*"],
+    matcher: ["/admin/:path*", "/agent/:path*", "/tenant/:path*", "/landlord/:path*", "/booking-officer/:path*"],
 };

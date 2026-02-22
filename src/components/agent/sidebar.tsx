@@ -8,6 +8,8 @@ import {
     LayoutDashboard,
     Home,
     LogOut,
+    Package,
+    LifeBuoy,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -28,6 +30,18 @@ export function AgentSidebar({ className }: SidebarProps) {
             icon: Home,
             href: "/agent/properties",
             active: pathname.startsWith("/agent/properties"),
+        },
+        {
+            label: "Inventory",
+            icon: Package,
+            href: "/agent/inventory",
+            active: pathname.startsWith("/agent/inventory"),
+        },
+        {
+            label: "Support Tickets",
+            icon: LifeBuoy,
+            href: "/agent/support",
+            active: pathname.startsWith("/agent/support"),
         },
     ];
 

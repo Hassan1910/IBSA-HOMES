@@ -116,7 +116,7 @@ export default async function TenantDashboard() {
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-slate-900 dark:text-white">$0.00</div>
+                        <div className="text-2xl font-bold text-slate-900 dark:text-white">KES 0.00</div>
                         <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1 font-medium flex items-center">
                             All caught up!
                         </p>
@@ -182,7 +182,7 @@ export default async function TenantDashboard() {
                                         </div>
                                         <div className="text-right">
                                             <p className="text-sm font-semibold text-slate-900 dark:text-white">
-                                                ${Number(payment.amount).toLocaleString()}
+                                                KES {Number(payment.amount).toLocaleString()}
                                             </p>
                                             <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">Completed</p>
                                         </div>

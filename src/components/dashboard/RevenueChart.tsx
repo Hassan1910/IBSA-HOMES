@@ -42,8 +42,7 @@ export function RevenueChart({ data }: { data: any[] }) {
                         stroke={isDark ? '#94a3b8' : '#64748b'}
                         fontSize={12}
                         tickLine={false}
-                        axisLine={false}
-                        tickFormatter={(value) => `$${value}`}
+                        tickFormatter={(value) => `KES ${value}`}
                     />
                     <Tooltip
                         contentStyle={{

@@ -65,8 +65,8 @@ export default async function TenantMaintenancePage() {
                                                 {new Date(request.createdAt).toLocaleDateString()}
                                             </CardTitle>
                                             <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${request.status === 'RESOLVED' ? 'bg-green-100 text-green-800' :
-                                                    request.status === 'OPEN' ? 'bg-red-100 text-red-800' :
-                                                        'bg-yellow-100 text-yellow-800'
+                                                request.status === 'OPEN' ? 'bg-red-100 text-red-800' :
+                                                    'bg-yellow-100 text-yellow-800'
                                                 }`}>
                                                 {request.status}
                                             </span>
@@ -75,7 +75,7 @@ export default async function TenantMaintenancePage() {
                                     <CardContent>
                                         <p className="text-sm text-gray-700">{request.description}</p>
                                         {request.cost && (
-                                            <p className="mt-2 text-xs text-gray-500">Cost: ${Number(request.cost).toFixed(2)}</p>
+                                            <p className="mt-2 text-xs text-gray-500">Cost: KES {Number(request.cost).toFixed(2)}</p>
                                         )}
                                     </CardContent>
                                 </Card>

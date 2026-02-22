@@ -89,7 +89,7 @@ export default async function AdminDashboard() {
                         <DollarSign className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${metrics.mrr.toLocaleString()}</div>
+                        <div className="text-2xl font-bold">KES {metrics.mrr.toLocaleString()}</div>
                         <p className="text-xs text-muted-foreground">
                             Based on active leases
                         </p>
@@ -103,7 +103,7 @@ export default async function AdminDashboard() {
                         <Wrench className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">${metrics.totalMaintenanceExpenses.toLocaleString()}</div>
+                        <div className="text-2xl font-bold">KES {metrics.totalMaintenanceExpenses.toLocaleString()}</div>
                         <p className="text-xs text-muted-foreground">
                             Resolved maintenance costs
                         </p>

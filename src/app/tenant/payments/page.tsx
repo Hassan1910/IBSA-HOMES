@@ -70,7 +70,7 @@ export default async function TenantPaymentsPage() {
                                 <TableRow key={payment.id} className={payment.status === 'PENDING' ? 'bg-muted/50' : ''}>
                                     <TableCell>{new Date(payment.date).toLocaleDateString()}</TableCell>
                                     <TableCell className="font-medium">{payment.type}</TableCell>
-                                    <TableCell>${Number(payment.amount).toFixed(2)}</TableCell>
+                                    <TableCell>KES {Number(payment.amount).toFixed(2)}</TableCell>
                                     <TableCell>
                                         <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${payment.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
                                             payment.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :

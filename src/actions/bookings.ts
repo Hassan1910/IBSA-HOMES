@@ -28,6 +28,7 @@ export async function createBooking(data: {
             },
         })
         revalidatePath('/admin/bookings')
+        revalidatePath('/booking-officer/bookings')
         revalidatePath(`/properties/${data.propertyId}`)
         return { success: true, booking }
     } catch (error) {
@@ -72,6 +73,7 @@ export async function updateBookingStatus(id: string, status: string) {
             data: { status },
         })
         revalidatePath('/admin/bookings')
+        revalidatePath('/booking-officer/bookings')
         return { success: true, booking }
     } catch (error) {
         console.error('Failed to update booking status:', error)
@@ -85,6 +87,7 @@ export async function deleteBooking(id: string) {
             where: { id },
         })
         revalidatePath('/admin/bookings')
+        revalidatePath('/booking-officer/bookings')
         return { success: true }
     } catch (error) {
         console.error('Failed to delete booking:', error)

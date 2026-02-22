@@ -8,6 +8,9 @@ import {
     LayoutDashboard,
     Home,
     LogOut,
+    MessageSquare,
+    Settings,
+    HeartHandshake,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -28,6 +31,18 @@ export function LandlordSidebar({ className }: SidebarProps) {
             icon: Home,
             href: "/landlord/properties",
             active: pathname.startsWith("/landlord/properties"),
+        },
+        {
+            label: "Settings",
+            icon: Settings,
+            href: "/landlord/settings",
+            active: pathname === "/landlord/settings",
+        },
+        {
+            label: "Support",
+            icon: HeartHandshake,
+            href: "/landlord/support",
+            active: pathname === "/landlord/support",
         },
     ];
 

@@ -78,9 +78,9 @@ export default function BookingList({ initialBookings }: { initialBookings: any[
                             <TableCell>{new Date(booking.date).toLocaleDateString()}</TableCell>
                             <TableCell>
                                 <div className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${booking.status === 'CONFIRMED' ? 'bg-green-100 text-green-800' :
-                                        booking.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                                            booking.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
-                                                'bg-gray-100 text-gray-800'
+                                    booking.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
+                                        booking.status === 'CANCELLED' ? 'bg-red-100 text-red-800' :
+                                            'bg-gray-100 text-gray-800'
                                     }`}>
                                     {booking.status}
                                 </div>

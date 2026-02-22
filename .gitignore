@@ -41,3 +41,11 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# Exclude docs except readme
+*.md
+!readme.md
+!README.md
+*.docx
+*.txt
+*.text

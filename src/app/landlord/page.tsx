@@ -113,7 +113,7 @@ export default async function LandlordDashboard() {
                         </div>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-3xl font-bold text-slate-900 dark:text-white">${totalRent.toLocaleString()}</div>
+                        <div className="text-3xl font-bold text-slate-900 dark:text-white">KES {totalRent.toLocaleString()}</div>
                         <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1 flex items-center font-medium">
                             <TrendingUp className="h-3 w-3 mr-1" />
                             Based on currently rented units
@@ -184,16 +184,16 @@ export default async function LandlordDashboard() {
                                                 </p>
                                                 <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
                                                 <p className="text-xs font-medium text-slate-700 dark:text-slate-300 hidden sm:inline">
-                                                    ${Number(property.price).toLocaleString()}
+                                                    KES {Number(property.price).toLocaleString()}
                                                 </p>
                                             </div>
                                         </div>
                                         <div className="flex-shrink-0">
                                             <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium transition-colors ${property.status === 'AVAILABLE'
-                                                    ? 'bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800/30' :
-                                                    property.status === 'RENTED'
-                                                        ? 'bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/30' :
-                                                        'bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800/30'
+                                                ? 'bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800/30' :
+                                                property.status === 'RENTED'
+                                                    ? 'bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/30' :
+                                                    'bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800/30'
                                                 }`}>
                                                 {property.status}
                                             </span>

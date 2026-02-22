@@ -70,7 +70,7 @@ export default async function AgentPropertiesPage() {
                                             <p className="text-sm text-slate-500 mb-2">{property.address}</p>
                                             <div className="flex flex-wrap gap-2 text-xs">
                                                 <span className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
-                                                    ${Number(property.price).toLocaleString()}/mo
+                                                    KES {Number(property.price).toLocaleString()}/mo
                                                 </span>
                                                 <span className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
                                                     {property.bedrooms} Bed

@@ -9,6 +9,7 @@ import {
     CreditCard,
     PenTool,
     LogOut,
+    HeartHandshake, // Added for Support icon
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
