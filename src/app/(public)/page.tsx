@@ -114,14 +114,19 @@ export default async function LandingPage() {
               </p>
             </div>
 
-            <div className="bg-white dark:bg-zinc-950 p-8 rounded-2xl shadow-sm border border-zinc-100 dark:border-zinc-800 hover:shadow-md transition-all group">
+            <div className="bg-white dark:bg-zinc-950 p-8 rounded-2xl shadow-sm border border-zinc-100 dark:border-zinc-800 hover:shadow-md transition-all group flex flex-col h-full">
               <div className="w-14 h-14 bg-zinc-100 dark:bg-zinc-900 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:bg-zinc-200 dark:group-hover:bg-zinc-800 transition-colors">
                 <Clock className="w-6 h-6 text-zinc-900 dark:text-zinc-100" />
               </div>
               <h3 className="text-xl font-semibold mb-3 text-zinc-900 dark:text-zinc-50">24/7 Support</h3>
-              <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-sm">
+              <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-sm mb-4">
                 Our dedicated support team is always available to assist with any questions or maintenance needs.
               </p>
+              <div className="mt-auto">
+                <Link href="/help" className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 hover:underline inline-flex items-center">
+                  Visit Help Center &rarr;
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -135,11 +140,18 @@ export default async function LandingPage() {
           <p className="text-zinc-400 mb-10 max-w-2xl mx-auto text-lg">
             Browse our latest listings and find the perfect property for you and your family today.
           </p>
-          <Link href="/properties">
-            <Button size="lg" className="bg-white text-zinc-950 hover:bg-zinc-200 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-zinc-300 font-bold px-8 h-12 rounded-full shadow-lg transition-all hover:scale-105 active:scale-95">
-              Start Browsing
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link href="/properties">
+              <Button size="lg" className="bg-white text-zinc-950 hover:bg-zinc-200 dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-zinc-300 font-bold px-8 h-12 rounded-full shadow-lg transition-all hover:scale-105 active:scale-95">
+                Start Browsing
+              </Button>
+            </Link>
+            <Link href="/help">
+              <Button size="lg" variant="outline" className="border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white font-bold px-8 h-12 rounded-full transition-all hover:scale-105 active:scale-95 bg-zinc-900/50">
+                Contact Support
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
     </div>

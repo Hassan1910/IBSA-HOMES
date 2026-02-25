@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { deleteTenant } from '@/actions/tenants'
 import { Pencil, Trash2 } from 'lucide-react'
 
-export default function TenantActions({ id }: { id: string }) {
+export default function TenantActions({ id, basePath = '/admin/tenants' }: { id: string, basePath?: string }) {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
 
@@ -32,7 +32,7 @@ export default function TenantActions({ id }: { id: string }) {
 
     return (
         <div className="flex justify-end gap-2">
-            <Link href={`/admin/tenants/${id}/edit`}>
+            <Link href={`${basePath}/${id}/edit`}>
                 <Button variant="ghost" size="icon" title="Edit Tenant">
                     <Pencil className="h-4 w-4" />
                 </Button>

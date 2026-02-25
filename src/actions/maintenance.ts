@@ -3,7 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { getServerSession } from "next-auth"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { authOptions } from "@/lib/auth"
 
 export async function createMaintenanceRequest(data: {
     description: string
@@ -25,6 +25,8 @@ export async function createMaintenanceRequest(data: {
         })
         revalidatePath('/tenant/maintenance')
         revalidatePath('/admin/maintenance')
+        revalidatePath('/agent', 'layout')
+        revalidatePath('/agent/maintenance')
         return { success: true, request }
     } catch (error) {
         console.error('Failed to create maintenance request:', error)
@@ -65,9 +67,79 @@ export async function updateMaintenanceStatus(id: string, status: string) {
         })
         revalidatePath('/tenant/maintenance')
         revalidatePath('/admin/maintenance')
+        revalidatePath('/agent', 'layout')
+        revalidatePath('/agent/maintenance')
         return { success: true, request }
     } catch (error) {
         console.error('Failed to update maintenance request:', error)
         return { success: false, error: 'Failed to update maintenance request' }
     }
 }
+
+export async function getAgentUnreadMaintenanceCount() {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.id) return { success: false, error: 'Unauthorized', count: 0 };
+
+        const agentId = session.user.id;
+
+        const properties = await prisma.property.findMany({
+            where: { agentId },
+            select: { id: true }
+        });
+        const propertyIds = properties.map(p => p.id);
+
+        if (propertyIds.length === 0) {
+            return { success: true, count: 0 };
+        }
+
+        const count = await prisma.maintenanceRequest.count({
+            where: {
+                isReadByAgent: false,
+                propertyId: { in: propertyIds }
+            }
+        });
+
+        return { success: true, count };
+    } catch (error) {
+        console.error('Failed to get unread maintenance count:', error);
+        return { success: false, error: 'Failed to get unread maintenance count', count: 0 };
+    }
+}
+
+export async function markAgentMaintenanceAsRead(propertyIds?: string[]) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.id) return { success: false, error: 'Unauthorized' };
+
+        const agentId = session.user.id;
+
+        let idsToUpdate = propertyIds;
+
+        if (!idsToUpdate || idsToUpdate.length === 0) {
+            const properties = await prisma.property.findMany({
+                where: { agentId },
+                select: { id: true }
+            });
+            idsToUpdate = properties.map(p => p.id);
+        }
+
+        if (idsToUpdate.length > 0) {
+            await prisma.maintenanceRequest.updateMany({
+                where: {
+                    isReadByAgent: false,
+                    propertyId: { in: idsToUpdate }
+                },
+                data: { isReadByAgent: true }
+            });
+        }
+
+        revalidatePath('/agent/maintenance');
+        revalidatePath('/agent', 'layout');
+        return { success: true };
+    } catch (error) {
+        console.error('Failed to mark maintenance as read:', error);
+        return { success: false, error: 'Failed to mark maintenance as read' };
+    }
+}
+

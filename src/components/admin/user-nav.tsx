@@ -12,16 +12,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
 
 interface UserNavProps {
     user: {
         name?: string | null;
         email?: string | null;
         image?: string | null;
+        role?: string;
     }
 }
 
 export function UserNav({ user }: UserNavProps) {
+    const rolePath = user.role ? `/${user.role.toLowerCase().replace('_', '-')}/profile` : '#';
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -43,8 +47,10 @@ export function UserNav({ user }: UserNavProps) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                        Profile
+                    <DropdownMenuItem asChild>
+                        <Link href={rolePath} className="w-full cursor-pointer">
+                            Profile
+                        </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                         Settings

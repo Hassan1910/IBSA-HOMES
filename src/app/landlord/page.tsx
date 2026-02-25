@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Building, Users, DollarSign, ExternalLink, TrendingUp, Home } from "lucide-react";
 import Link from "next/link";
@@ -26,24 +26,56 @@ export default async function LandlordDashboard() {
     // Calculate total tenants across all owned properties
     const totalTenants = properties.reduce((acc, prop) => acc + prop.tenants.length, 0);
 
-    // Calculate total rent from rented properties
-    const totalRent = properties
-        .filter(p => p.status === 'RENTED')
-        .reduce((acc, prop) => acc + Number(prop.price), 0);
+    const availableProperties = properties.filter(p => p.status === 'AVAILABLE' && p.tenants.length === 0).length;
+    const rentedProperties = properties.filter(p => p.status === 'RENTED' || p.tenants.length > 0).length;
 
-    const availableProperties = properties.filter(p => p.status === 'AVAILABLE').length;
-    const rentedProperties = properties.filter(p => p.status === 'RENTED').length;
+    const payments = await prisma.payment.findMany({
+        where: {
+            tenant: {
+                property: {
+                    ownerId: session?.user?.id
+                }
+            },
+            status: 'COMPLETED'
+        }
+    });
 
-    // Generate dummy data for the revenue chart if no actual historical data exists
-    // In a real app, this would come from a query to payment history
-    const revenueData = [
-        { name: 'Jan', revenue: Math.floor(totalRent * 0.8) },
-        { name: 'Feb', revenue: Math.floor(totalRent * 0.85) },
-        { name: 'Mar', revenue: Math.floor(totalRent * 0.9) },
-        { name: 'Apr', revenue: Math.floor(totalRent * 0.95) },
-        { name: 'May', revenue: totalRent },
-        { name: 'Jun', revenue: totalRent },
-    ];
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+
+    // Calculate actual total rent from completed payments this month
+    const totalRent = payments
+        .filter(p => p.date.getMonth() === currentMonth && p.date.getFullYear() === currentYear && p.type === 'RENT')
+        .reduce((acc, p) => acc + Number(p.amount), 0);
+
+    const sixMonthsAgo = new Date();
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 5);
+    sixMonthsAgo.setDate(1);
+    sixMonthsAgo.setHours(0, 0, 0, 0);
+
+    const recentPayments = payments.filter(p => p.date >= sixMonthsAgo);
+
+    // Initialize the last 6 months with 0 revenue
+    const monthlyData: Record<string, number> = {};
+    for (let i = 0; i < 6; i++) {
+        const d = new Date();
+        d.setMonth(d.getMonth() - i);
+        const monthName = d.toLocaleString('default', { month: 'short' });
+        monthlyData[monthName] = 0;
+    }
+
+    recentPayments.forEach(payment => {
+        const monthName = payment.date.toLocaleString('default', { month: 'short' });
+        if (monthlyData[monthName] !== undefined && payment.type === 'RENT') {
+            monthlyData[monthName] += Number(payment.amount);
+        }
+    });
+
+    const revenueData = Object.entries(monthlyData).map(([name, revenue]) => ({
+        name,
+        revenue
+    })).reverse();
 
     return (
         <div className="space-y-8">
@@ -107,7 +139,7 @@ export default async function LandlordDashboard() {
                 <Card className="hover:shadow-md transition-shadow relative overflow-hidden group">
                     <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">Monthly Revenue</CardTitle>
+                        <CardTitle className="text-sm font-medium text-slate-600 dark:text-slate-400">Revenue (This Month)</CardTitle>
                         <div className="h-8 w-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
                             <DollarSign className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                         </div>
@@ -116,7 +148,7 @@ export default async function LandlordDashboard() {
                         <div className="text-3xl font-bold text-slate-900 dark:text-white">KES {totalRent.toLocaleString()}</div>
                         <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1 flex items-center font-medium">
                             <TrendingUp className="h-3 w-3 mr-1" />
-                            Based on currently rented units
+                            Collected this month
                         </p>
                     </CardContent>
                 </Card>
@@ -189,13 +221,13 @@ export default async function LandlordDashboard() {
                                             </div>
                                         </div>
                                         <div className="flex-shrink-0">
-                                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium transition-colors ${property.status === 'AVAILABLE'
+                                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium transition-colors ${property.status === 'AVAILABLE' && property.tenants.length === 0
                                                 ? 'bg-green-100 text-green-800 border border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800/30' :
-                                                property.status === 'RENTED'
+                                                property.status === 'RENTED' || property.tenants.length > 0
                                                     ? 'bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/30' :
                                                     'bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800/30'
                                                 }`}>
-                                                {property.status}
+                                                {property.status === 'AVAILABLE' && property.tenants.length > 0 ? 'RENTED' : property.status}
                                             </span>
                                         </div>
                                     </div>

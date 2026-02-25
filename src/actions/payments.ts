@@ -3,7 +3,7 @@
 import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { getServerSession } from "next-auth"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { authOptions } from "@/lib/auth"
 import crypto from 'crypto'
 
 export async function initializePayment(data: { amount: number, type: string }) {
@@ -36,7 +36,12 @@ export async function initializePayment(data: { amount: number, type: string }) 
             }
         })
 
-        return { success: true, payment, email: user.email }
+        const serializedPayment = {
+            ...payment,
+            amount: Number(payment.amount)
+        }
+
+        return { success: true, payment: serializedPayment, email: user.email }
     } catch (error) {
         console.error('Failed to initialize payment:', error)
         return { success: false, error: 'Failed to initialize payment' }
@@ -76,5 +81,117 @@ export async function verifyPayment(reference: string) {
     } catch (error) {
         console.error('Failed to verify payment:', error)
         return { success: false, error: 'Failed to verify payment' }
+    }
+}
+
+export async function getAgentPayments() {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.organizationId) return { success: false, error: 'Unauthorized' };
+
+        const currentUser = await prisma.user.findUnique({
+            where: { id: session.user.id }
+        });
+
+        if (currentUser?.role !== 'AGENT') {
+            return { success: false, error: 'Unauthorized: Only agents can access this' };
+        }
+
+        const payments = await prisma.payment.findMany({
+            where: {
+                organizationId: session.user.organizationId,
+                tenant: {
+                    property: {
+                        agentId: session.user.id
+                    }
+                }
+            },
+            include: {
+                tenant: {
+                    include: {
+                        user: {
+                            select: {
+                                name: true,
+                                email: true
+                            }
+                        },
+                        property: {
+                            select: {
+                                title: true
+                            }
+                        }
+                    }
+                }
+            },
+            orderBy: {
+                date: 'desc'
+            }
+        });
+
+        const serializedPayments = payments.map(p => ({
+            ...p,
+            amount: Number(p.amount)
+        }));
+
+        return { success: true, payments: serializedPayments }
+    } catch (error) {
+        console.error('Failed to fetch agent payments:', error)
+        return { success: false, error: 'Failed to fetch payments' }
+    }
+}
+
+export async function getLandlordPayments() {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.organizationId) return { success: false, error: 'Unauthorized' };
+
+        const currentUser = await prisma.user.findUnique({
+            where: { id: session.user.id }
+        });
+
+        if (currentUser?.role !== 'LANDLORD' && currentUser?.role !== 'ADMIN') {
+            return { success: false, error: 'Unauthorized: Only landlords can access this' };
+        }
+
+        const payments = await prisma.payment.findMany({
+            where: {
+                organizationId: session.user.organizationId,
+                tenant: {
+                    property: {
+                        ownerId: session.user.id
+                    }
+                }
+            },
+            include: {
+                tenant: {
+                    include: {
+                        user: {
+                            select: {
+                                name: true,
+                                email: true
+                            }
+                        },
+                        property: {
+                            select: {
+                                title: true
+                            }
+                        }
+                    }
+                }
+            },
+            orderBy: {
+                date: 'desc'
+            }
+        });
+
+        const serializedPayments = payments.map(p => ({
+            ...p,
+            amount: Number(p.amount)
+        }));
+
+        return { success: true, payments: serializedPayments }
+    } catch (error) {
+        console.error('Failed to fetch landlord payments:', error)
+        return { success: false, error: 'Failed to fetch payments' }
     }
 }

@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import bcrypt from 'bcryptjs'
 import { getServerSession } from "next-auth"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { authOptions } from "@/lib/auth"
 
 export async function createTenant(data: {
     name: string
@@ -18,6 +18,10 @@ export async function createTenant(data: {
     try {
         const session = await getServerSession(authOptions);
         if (!session?.user?.organizationId) return { success: false, error: 'Unauthorized' };
+
+        if (session.user.role === 'AGENT' && !data.propertyId) {
+            return { success: false, error: 'Agents must assign a property when creating a tenant' };
+        }
 
         const existingUser = await prisma.user.findUnique({
             where: { email: data.email }
@@ -67,6 +71,10 @@ export async function updateTenant(id: string, data: {
     try {
         const session = await getServerSession(authOptions)
         if (!session?.user?.organizationId) return { success: false, error: 'Unauthorized' }
+
+        if (session.user.role === 'AGENT' && !data.propertyId) {
+            return { success: false, error: 'Agents must assign a property when updating a tenant' };
+        }
 
         // Update User info
         await prisma.user.update({
@@ -188,5 +196,57 @@ export async function getTenant(id: string) {
     } catch (error) {
         console.error('Failed to get tenant:', error)
         return { success: false, error: 'Failed to get tenant' }
+    }
+}
+
+export async function getAgentTenants() {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user?.organizationId) return { success: false, error: 'Unauthorized' };
+
+        // Ensure user is an AGENT
+        const currentUser = await prisma.user.findUnique({
+            where: { id: session.user.id }
+        });
+
+        if (currentUser?.role !== 'AGENT') {
+            return { success: false, error: 'Unauthorized: Only agents can access this' };
+        }
+
+        const tenants = await prisma.user.findMany({
+            where: {
+                role: 'TENANT',
+                organizationId: session.user.organizationId,
+                OR: [
+                    {
+                        tenantProfile: {
+                            agentId: session.user.id
+                        }
+                    },
+                    {
+                        tenantProfile: {
+                            property: {
+                                agentId: session.user.id
+                            }
+                        }
+                    }
+                ]
+            },
+            include: {
+                tenantProfile: {
+                    include: {
+                        property: true,
+                        agent: true
+                    }
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+        return { success: true, tenants };
+    } catch (error) {
+        console.error('Failed to get agent tenants:', error);
+        return { success: false, error: 'Failed to get agent tenants' };
     }
 }

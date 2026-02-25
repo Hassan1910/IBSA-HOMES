@@ -3,7 +3,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import { UserNav } from "@/components/admin/user-nav"; // We'll create this next
 import { cn } from "@/lib/utils";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { MobileSidebar } from "@/components/admin/mobile-sidebar"; // Create this too
 

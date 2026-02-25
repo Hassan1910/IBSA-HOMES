@@ -3,11 +3,12 @@ import { MobileSidebar } from "@/components/agent/mobile-sidebar";
 import { UserNav } from "@/components/admin/user-nav";
 import { ModeToggle } from "@/components/mode-toggle";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { AgentNotificationBell } from "@/components/agent/notification-bell";
 
 export default async function AgentLayout({
     children,
@@ -45,6 +46,7 @@ export default async function AgentLayout({
                     </div>
 
                     <div className="flex items-center ml-auto space-x-4">
+                        <AgentNotificationBell />
                         <ModeToggle />
                         <UserNav user={session.user} />
                     </div>

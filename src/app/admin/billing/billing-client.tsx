@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { usePaystackPayment } from 'react-paystack';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+
+const PaystackButton = dynamic(() => import('@/components/paystack-button'), { ssr: false });
 
 interface BillingClientProps {
     organization: {
@@ -37,7 +39,7 @@ export default function BillingClient({ organization, userEmail, paystackPublicK
         }
     };
 
-    const initializePayment = usePaystackPayment(config);
+
 
     const onSuccess = (reference: any) => {
         setIsLoading(false);
@@ -58,7 +60,6 @@ export default function BillingClient({ organization, userEmail, paystackPublicK
             return;
         }
         setIsLoading(true);
-        initializePayment({ onSuccess, onClose });
     };
 
     return (
@@ -76,14 +77,24 @@ export default function BillingClient({ organization, userEmail, paystackPublicK
                     <Button variant="outline" className="w-full" disabled>
                         Already Subscribed
                     </Button>
-                ) : (
+                ) : (!paystackPublicKey || !proPlanCode) ? (
                     <Button
                         onClick={handleSubscribe}
                         className="w-full"
-                        disabled={isLoading}
                     >
-                        {isLoading ? "Processing..." : "Subscribe Now"}
+                        Subscribe Now
                     </Button>
+                ) : (
+                    <div onClick={() => setIsLoading(true)}>
+                        <PaystackButton
+                            config={config}
+                            onSuccess={onSuccess}
+                            onClose={onClose}
+                            className="w-full"
+                            disabled={isLoading}
+                            text={isLoading ? "Processing..." : "Subscribe Now"}
+                        />
+                    </div>
                 )}
             </div>
         </div>

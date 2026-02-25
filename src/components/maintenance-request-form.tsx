@@ -47,10 +47,10 @@ export default function MaintenanceRequestForm({ propertyId, reporterId }: { pro
     }
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow border border-gray-200">
+        <div className="bg-card text-card-foreground p-6 rounded-lg shadow-sm border">
             <h3 className="text-lg font-medium mb-4">Submit New Request</h3>
             {message && (
-                <div className={`p-3 rounded mb-4 text-sm ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                <div className={`p-3 rounded mb-4 text-sm ${message.type === 'success' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
                     {message.text}
                 </div>
             )}

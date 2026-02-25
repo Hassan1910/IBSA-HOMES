@@ -96,13 +96,13 @@ export default function ContactPage() {
                                         <label htmlFor="firstName" className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
                                             First name
                                         </label>
-                                        <Input id="firstName" placeholder="John" className="bg-white dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-800 h-12" />
+                                        <Input id="firstName" placeholder="Liban" className="bg-white dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-800 h-12" />
                                     </div>
                                     <div className="space-y-2">
                                         <label htmlFor="lastName" className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
                                             Last name
                                         </label>
-                                        <Input id="lastName" placeholder="Doe" className="bg-white dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-800 h-12" />
+                                        <Input id="lastName" placeholder="philips" className="bg-white dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-800 h-12" />
                                     </div>
                                 </div>
 
@@ -110,7 +110,7 @@ export default function ContactPage() {
                                     <label htmlFor="email" className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
                                         Email address
                                     </label>
-                                    <Input id="email" type="email" placeholder="john@example.com" className="bg-white dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-800 h-12" />
+                                    <Input id="email" type="email" placeholder="liban@example.com" className="bg-white dark:bg-zinc-950/50 border-zinc-200 dark:border-zinc-800 h-12" />
                                 </div>
 
                                 <div className="space-y-2">

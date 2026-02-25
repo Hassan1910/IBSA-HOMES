@@ -23,9 +23,11 @@ type TenantFormProps = {
     initialData?: any
     properties: Property[]
     isEditing?: boolean
+    basePath?: string
+    requireProperty?: boolean
 }
 
-export default function TenantForm({ initialData, properties, isEditing = false }: TenantFormProps) {
+export default function TenantForm({ initialData, properties, isEditing = false, basePath = '/admin/tenants', requireProperty = false }: TenantFormProps) {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -58,6 +60,12 @@ export default function TenantForm({ initialData, properties, isEditing = false 
         setLoading(true)
         setError(null)
 
+        if (requireProperty && (!formData.propertyId || formData.propertyId === 'none')) {
+            setError('Please assign a property to the tenant.')
+            setLoading(false)
+            return
+        }
+
         try {
             const dataToSubmit = {
                 ...formData,
@@ -74,7 +82,7 @@ export default function TenantForm({ initialData, properties, isEditing = false 
             }
 
             if (result.success) {
-                router.push('/admin/tenants')
+                router.push(basePath)
                 router.refresh()
             } else {
                 setError(result.error || 'Something went wrong')
@@ -87,9 +95,9 @@ export default function TenantForm({ initialData, properties, isEditing = false 
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-6 bg-white p-6 rounded-lg border shadow-sm">
+        <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg shadow-sm">
             {error && (
-                <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm">
+                <div className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 p-3 rounded-md text-sm">
                     {error}
                 </div>
             )}
@@ -103,7 +111,7 @@ export default function TenantForm({ initialData, properties, isEditing = false 
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        placeholder="John Doe"
+                        placeholder="Liban philips"
                     />
                 </div>
 
@@ -116,7 +124,7 @@ export default function TenantForm({ initialData, properties, isEditing = false 
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        placeholder="john@example.com"
+                        placeholder="liban@example.com"
                     />
                 </div>
 
@@ -149,7 +157,9 @@ export default function TenantForm({ initialData, properties, isEditing = false 
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="propertyId">Assigned Property</Label>
+                    <Label htmlFor="propertyId">
+                        Assigned Property {requireProperty && <span className="text-red-500">*</span>}
+                    </Label>
                     <Select
                         value={formData.propertyId || 'none'}
                         onValueChange={handlePropertyChange}

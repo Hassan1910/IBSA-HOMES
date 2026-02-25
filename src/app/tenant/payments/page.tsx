@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { prisma } from '@/lib/prisma';
 import {
     Table,
@@ -41,13 +41,13 @@ export default async function TenantPaymentsPage() {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Payments</h1>
-                    <p className="text-muted-foreground mt-1 text-sm">View your payment history and pay pending invoices.</p>
+                    <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Payments</h1>
+                    <p className="text-slate-500 dark:text-slate-400 mt-1 text-sm">View your payment history and pay pending invoices.</p>
                 </div>
                 <MakePaymentButton />
             </div>
 
-            <div className="rounded-md border bg-white">
+            <div className="rounded-md border bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 shadow-sm">
                 <Table>
                     <TableHeader>
                         <TableRow>
@@ -67,14 +67,14 @@ export default async function TenantPaymentsPage() {
                             </TableRow>
                         ) : (
                             payments.map((payment) => (
-                                <TableRow key={payment.id} className={payment.status === 'PENDING' ? 'bg-muted/50' : ''}>
+                                <TableRow key={payment.id} className={payment.status === 'PENDING' ? 'bg-slate-50 dark:bg-slate-800/50' : 'dark:border-slate-800'}>
                                     <TableCell>{new Date(payment.date).toLocaleDateString()}</TableCell>
                                     <TableCell className="font-medium">{payment.type}</TableCell>
                                     <TableCell>KES {Number(payment.amount).toFixed(2)}</TableCell>
                                     <TableCell>
-                                        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${payment.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
-                                            payment.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
-                                                'bg-red-100 text-red-800'
+                                        <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${payment.status === 'COMPLETED' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                                            payment.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                                                'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                                             }`}>
                                             {payment.status}
                                         </span>

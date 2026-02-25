@@ -10,6 +10,9 @@ import {
     LogOut,
     Package,
     LifeBuoy,
+    Users,
+    CreditCard,
+    Wrench,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -42,6 +45,24 @@ export function AgentSidebar({ className }: SidebarProps) {
             icon: LifeBuoy,
             href: "/agent/support",
             active: pathname.startsWith("/agent/support"),
+        },
+        {
+            label: "Maintenance",
+            icon: Wrench,
+            href: "/agent/maintenance",
+            active: pathname.startsWith("/agent/maintenance"),
+        },
+        {
+            label: "Tenants",
+            icon: Users,
+            href: "/agent/tenants",
+            active: pathname.startsWith("/agent/tenants"),
+        },
+        {
+            label: "Payments",
+            icon: CreditCard,
+            href: "/agent/payments",
+            active: pathname.startsWith("/agent/payments"),
         },
     ];
 

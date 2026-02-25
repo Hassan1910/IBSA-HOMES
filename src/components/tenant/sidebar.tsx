@@ -37,6 +37,12 @@ export function TenantSidebar({ className }: SidebarProps) {
             href: "/tenant/maintenance",
             active: pathname.startsWith("/tenant/maintenance"),
         },
+        {
+            label: "Support",
+            icon: HeartHandshake,
+            href: "/tenant/support",
+            active: pathname.startsWith("/tenant/support"),
+        },
     ];
 
     return (

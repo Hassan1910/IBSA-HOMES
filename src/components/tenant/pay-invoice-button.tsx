@@ -2,18 +2,12 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { usePaystackPayment } from "react-paystack"
+import dynamic from 'next/dynamic'
+
+const PaystackCheckout = dynamic(() => import('@/components/paystack-checkout'), { ssr: false })
 import { verifyPayment } from "@/actions/payments"
 
-function PaystackCheckout({ config, onSuccess, onClose }: any) {
-    const initializePaystack = usePaystackPayment(config);
-
-    useEffect(() => {
-        initializePaystack({ onSuccess, onClose });
-    }, []);
-
-    return <span className="text-sm text-muted-foreground ml-2">Opening...</span>;
-}
+// Removed inline PaystackCheckout components
 
 export default function PayInvoiceButton({
     amount,

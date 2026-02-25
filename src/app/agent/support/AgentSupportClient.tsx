@@ -21,6 +21,7 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { updateSupportTicketStatus } from '@/app/actions/support';
 import { useToast } from "@/hooks/use-toast";
+import { AgentSupportReadTrigger } from "@/components/agent/support-read-trigger";
 
 type Ticket = {
     id: string;
@@ -67,6 +68,7 @@ export default function AgentSupportClient({ initialTickets }: { initialTickets:
 
     return (
         <div className="space-y-6">
+            <AgentSupportReadTrigger />
             <div>
                 <h1 className="text-3xl font-bold tracking-tight">Support Tickets</h1>
                 <p className="text-muted-foreground">Manage user complaints, inquiries, and feedback.</p>

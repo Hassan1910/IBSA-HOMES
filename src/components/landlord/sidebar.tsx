@@ -11,6 +11,7 @@ import {
     MessageSquare,
     Settings,
     HeartHandshake,
+    CreditCard,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -37,6 +38,12 @@ export function LandlordSidebar({ className }: SidebarProps) {
             icon: Settings,
             href: "/landlord/settings",
             active: pathname === "/landlord/settings",
+        },
+        {
+            label: "Payments",
+            icon: CreditCard,
+            href: "/landlord/payments",
+            active: pathname === "/landlord/payments",
         },
         {
             label: "Support",

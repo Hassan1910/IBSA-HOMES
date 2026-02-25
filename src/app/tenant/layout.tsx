@@ -3,7 +3,7 @@ import { MobileSidebar } from "@/components/tenant/mobile-sidebar";
 import { UserNav } from "@/components/admin/user-nav";
 import { ModeToggle } from "@/components/mode-toggle";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function TenantLayout({

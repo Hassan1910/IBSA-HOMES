@@ -52,12 +52,12 @@ export default function NewUserPage() {
 
                 <div className="space-y-2">
                     <Label htmlFor="name">Full Name</Label>
-                    <Input id="name" name="name" required placeholder="John Doe" />
+                    <Input id="name" name="name" required placeholder="Liban philips" />
                 </div>
 
                 <div className="space-y-2">
                     <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" name="email" type="email" required placeholder="john@example.com" />
+                    <Input id="email" name="email" type="email" required placeholder="liban@example.com" />
                 </div>
 
                 <div className="space-y-2">

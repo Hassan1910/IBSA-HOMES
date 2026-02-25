@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { prisma } from '@/lib/prisma';
 import { CreditCard, Home, PenTool, ExternalLink, AlertCircle } from 'lucide-react';
 import Link from 'next/link';

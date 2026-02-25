@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from "@/lib/auth";
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { deleteUser } from './actions';
@@ -82,16 +82,21 @@ export default async function AdminUsersPage() {
                                                 {new Date(user.createdAt).toLocaleDateString()}
                                             </td>
                                             <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                                {user.role !== 'ADMIN' && (
-                                                    <form action={async () => {
-                                                        'use server';
-                                                        await deleteUser(user.id);
-                                                    }}>
-                                                        <button type="submit" className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
-                                                            Delete<span className="sr-only">, {user.name}</span>
-                                                        </button>
-                                                    </form>
-                                                )}
+                                                <div className="flex justify-end gap-3 items-center">
+                                                    <Link href={`/admin/users/${user.id}/edit`} className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
+                                                        Edit<span className="sr-only">, {user.name}</span>
+                                                    </Link>
+                                                    {user.role !== 'ADMIN' && (
+                                                        <form action={async () => {
+                                                            'use server';
+                                                            await deleteUser(user.id);
+                                                        }}>
+                                                            <button type="submit" className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                                                                Delete<span className="sr-only">, {user.name}</span>
+                                                            </button>
+                                                        </form>
+                                                    )}
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

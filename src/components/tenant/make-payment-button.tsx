@@ -4,7 +4,9 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Plus } from "lucide-react"
 import { initializePayment, verifyPayment } from "@/actions/payments"
-import { usePaystackPayment } from "react-paystack"
+import dynamic from 'next/dynamic'
+
+const PaystackCheckout = dynamic(() => import('@/components/paystack-checkout'), { ssr: false })
 import {
     Dialog,
     DialogContent,
@@ -16,16 +18,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-function PaystackCheckout({ config, onSuccess, onClose }: any) {
-    const initializePaystack = usePaystackPayment(config);
-
-    useEffect(() => {
-        // usePaystackPayment returns a function that takes an options object
-        initializePaystack({ onSuccess, onClose });
-    }, []); // Run once when config is ready
-
-    return <p className="text-sm text-center text-muted-foreground mt-4">Opening gateway...</p>;
-}
+// Removed inline PaystackCheckout components
 
 export default function MakePaymentButton() {
     const [open, setOpen] = useState(false)
@@ -48,6 +41,7 @@ export default function MakePaymentButton() {
                     currency: "KES",
                     publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY as string,
                 });
+                setOpen(false);
             } else {
                 alert(res.error || "Failed to initialize payment")
                 setLoading(false)
@@ -62,7 +56,6 @@ export default function MakePaymentButton() {
     const handleSuccess = async (reference: any) => {
         try {
             await verifyPayment(reference.reference || reference);
-            setOpen(false);
             setAmount("");
             setPaymentConfig(null);
             setLoading(false);
@@ -81,51 +74,50 @@ export default function MakePaymentButton() {
     const handleOpenChange = (isOpen: boolean) => {
         setOpen(isOpen)
         if (!isOpen) {
-            setPaymentConfig(null)
             setAmount("")
             setLoading(false)
         }
     }
 
     return (
-        <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogTrigger asChild>
-                <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Make Payment
-                </Button>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Make a Payment</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="amount">Amount (KES)</Label>
-                        <Input
-                            id="amount"
-                            type="number"
-                            placeholder="Enter amount"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
-                            disabled={loading || paymentConfig !== null}
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="type">Payment Type</Label>
-                        <Select value={type} onValueChange={setType} disabled={loading || paymentConfig !== null}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="RENT">Rent</SelectItem>
-                                <SelectItem value="DEPOSIT">Security Deposit</SelectItem>
-                                <SelectItem value="FEE">Late Fee / Other</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
+        <>
+            <Dialog open={open} onOpenChange={handleOpenChange}>
+                <DialogTrigger asChild>
+                    <Button>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Make Payment
+                    </Button>
+                </DialogTrigger>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Make a Payment</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="amount">Amount (KES)</Label>
+                            <Input
+                                id="amount"
+                                type="number"
+                                placeholder="Enter amount"
+                                value={amount}
+                                onChange={(e) => setAmount(e.target.value)}
+                                disabled={loading}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="type">Payment Type</Label>
+                            <Select value={type} onValueChange={setType} disabled={loading}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="RENT">Rent</SelectItem>
+                                    <SelectItem value="DEPOSIT">Security Deposit</SelectItem>
+                                    <SelectItem value="FEE">Late Fee / Other</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
 
-                    {!paymentConfig ? (
                         <Button
                             className="w-full"
                             onClick={handleInitialize}
@@ -133,15 +125,16 @@ export default function MakePaymentButton() {
                         >
                             {loading ? 'Processing...' : 'Continue to Paystack'}
                         </Button>
-                    ) : (
-                        <PaystackCheckout
-                            config={paymentConfig}
-                            onSuccess={handleSuccess}
-                            onClose={handleClose}
-                        />
-                    )}
-                </div>
-            </DialogContent>
-        </Dialog>
+                    </div>
+                </DialogContent>
+            </Dialog>
+            {paymentConfig && (
+                <PaystackCheckout
+                    config={paymentConfig}
+                    onSuccess={handleSuccess}
+                    onClose={handleClose}
+                />
+            )}
+        </>
     )
 }

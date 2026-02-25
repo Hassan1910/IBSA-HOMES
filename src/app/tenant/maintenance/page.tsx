@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { authOptions } from "@/lib/auth";
 import { prisma } from '@/lib/prisma';
 import MaintenanceRequestForm from "@/components/maintenance-request-form";
 import {
@@ -33,7 +33,7 @@ export default async function TenantMaintenancePage() {
         return (
             <div className="text-center py-20">
                 <h1 className="text-2xl font-bold mb-4">Maintenance</h1>
-                <p className="text-gray-600">You must be assigned to a property to submit maintenance requests.</p>
+                <p className="text-muted-foreground">You must be assigned to a property to submit maintenance requests.</p>
             </div>
         );
     }
@@ -55,7 +55,7 @@ export default async function TenantMaintenancePage() {
                     <h2 className="text-xl font-semibold mb-4">Request History</h2>
                     <div className="space-y-4">
                         {maintenance.length === 0 ? (
-                            <p className="text-gray-500">No maintenance requests found.</p>
+                            <p className="text-muted-foreground">No maintenance requests found.</p>
                         ) : (
                             maintenance.map((request) => (
                                 <Card key={request.id}>
@@ -64,18 +64,18 @@ export default async function TenantMaintenancePage() {
                                             <CardTitle className="text-base font-medium">
                                                 {new Date(request.createdAt).toLocaleDateString()}
                                             </CardTitle>
-                                            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${request.status === 'RESOLVED' ? 'bg-green-100 text-green-800' :
-                                                request.status === 'OPEN' ? 'bg-red-100 text-red-800' :
-                                                    'bg-yellow-100 text-yellow-800'
+                                            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${request.status === 'RESOLVED' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                                                request.status === 'OPEN' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
+                                                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400'
                                                 }`}>
                                                 {request.status}
                                             </span>
                                         </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <p className="text-sm text-gray-700">{request.description}</p>
+                                        <p className="text-sm text-foreground">{request.description}</p>
                                         {request.cost && (
-                                            <p className="mt-2 text-xs text-gray-500">Cost: KES {Number(request.cost).toFixed(2)}</p>
+                                            <p className="mt-2 text-xs text-muted-foreground">Cost: KES {Number(request.cost).toFixed(2)}</p>
                                         )}
                                     </CardContent>
                                 </Card>

@@ -2,7 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from "@/lib/auth";
 
 export async function getDashboardMetrics() {
     const session = await getServerSession(authOptions);
@@ -14,11 +14,11 @@ export async function getDashboardMetrics() {
 
     const properties = await prisma.property.findMany({
         where: { organizationId },
-        select: { status: true, price: true }
+        select: { status: true, price: true, tenants: true }
     });
 
     const mrr = properties
-        .filter(p => p.status === 'RENTED')
+        .filter(p => p.status === 'RENTED' || p.tenants.length > 0)
         .reduce((sum, p) => sum + Number(p.price), 0);
 
     const maintenanceRequests = await prisma.maintenanceRequest.findMany({

@@ -53,7 +53,7 @@ export default function BookingForm({ propertyId, userId }: { propertyId: string
     }
 
     return (
-        <div className="bg-white p-6 rounded-lg shadow-md border border-gray-100">
+        <div className="bg-card text-card-foreground p-6 rounded-lg shadow-md border border-border">
             <h3 className="text-xl font-semibold mb-4">Book a Viewing</h3>
             {message && (
                 <div className={`p-3 rounded mb-4 text-sm ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
@@ -83,7 +83,7 @@ export default function BookingForm({ propertyId, userId }: { propertyId: string
                                 required
                                 value={visitorName}
                                 onChange={(e) => setVisitorName(e.target.value)}
-                                placeholder="John Doe"
+                                placeholder="Liban philips"
                             />
                         </div>
                         <div>

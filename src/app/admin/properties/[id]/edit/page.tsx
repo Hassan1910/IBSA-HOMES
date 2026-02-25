@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import PropertyForm from '@/components/admin/property-form';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from "@/lib/auth";
 import { redirect, notFound } from 'next/navigation';
 
 interface EditPropertyPageProps {
@@ -17,7 +17,7 @@ export default async function EditPropertyPage({ params }: EditPropertyPageProps
         redirect('/login');
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     const property = await prisma.property.findFirst({
         where: {
