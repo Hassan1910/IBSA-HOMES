@@ -12,6 +12,8 @@ const propertySchema = z.object({
     address: z.string().min(5),
     price: z.coerce.number().min(0),
     status: z.enum(['AVAILABLE', 'RENTED', 'MAINTENANCE']),
+    type: z.enum(['APARTMENT', 'HOUSE', 'OFFICE', 'LAND']).default('APARTMENT'),
+    purpose: z.enum(['RENT', 'SALE']).default('RENT'),
     bedrooms: z.coerce.number().min(0),
     bathrooms: z.coerce.number().min(0),
     area: z.coerce.number().min(0).optional(),

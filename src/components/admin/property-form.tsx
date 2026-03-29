@@ -25,6 +25,8 @@ const formSchema = z.object({
     address: z.string().min(5, 'Address must be at least 5 characters'),
     price: z.coerce.number().min(0, 'Price must be a positive number'),
     status: z.enum(['AVAILABLE', 'RENTED', 'MAINTENANCE']),
+    type: z.enum(['APARTMENT', 'HOUSE', 'OFFICE', 'LAND']),
+    purpose: z.enum(['RENT', 'SALE']),
     bedrooms: z.coerce.number().min(0),
     bathrooms: z.coerce.number().min(0),
     area: z.coerce.number().min(0).optional(),
@@ -73,6 +75,8 @@ export default function PropertyForm({
             address: '',
             price: 0,
             status: 'AVAILABLE',
+            type: 'APARTMENT',
+            purpose: 'RENT',
             bedrooms: 0,
             bathrooms: 0,
             area: 0,
@@ -180,16 +184,62 @@ export default function PropertyForm({
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="bedrooms">Bedrooms</Label>
-                    <Input id="bedrooms" type="number" {...register('bedrooms')} />
-                    {errors.bedrooms && <p className="text-sm text-red-500">{errors.bedrooms.message}</p>}
+                    <Label htmlFor="type">Property Type</Label>
+                    <Controller
+                        control={control}
+                        name="type"
+                        render={({ field }: { field: any }) => (
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select type" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="APARTMENT">Apartment</SelectItem>
+                                    <SelectItem value="HOUSE">House</SelectItem>
+                                    <SelectItem value="OFFICE">Office</SelectItem>
+                                    <SelectItem value="LAND">Land</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
+                    {errors.type && <p className="text-sm text-red-500">{errors.type.message}</p>}
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="bathrooms">Bathrooms</Label>
-                    <Input id="bathrooms" type="number" {...register('bathrooms')} />
-                    {errors.bathrooms && <p className="text-sm text-red-500">{errors.bathrooms.message}</p>}
+                    <Label htmlFor="purpose">Purpose</Label>
+                    <Controller
+                        control={control}
+                        name="purpose"
+                        render={({ field }: { field: any }) => (
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select purpose" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="RENT">For Rent</SelectItem>
+                                    <SelectItem value="SALE">For Sale</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
+                    {errors.purpose && <p className="text-sm text-red-500">{errors.purpose.message}</p>}
                 </div>
+
+                {watch('type') !== 'LAND' && (
+                    <>
+                        <div className="space-y-2">
+                            <Label htmlFor="bedrooms">Bedrooms</Label>
+                            <Input id="bedrooms" type="number" {...register('bedrooms')} />
+                            {errors.bedrooms && <p className="text-sm text-red-500">{errors.bedrooms.message}</p>}
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="bathrooms">Bathrooms</Label>
+                            <Input id="bathrooms" type="number" {...register('bathrooms')} />
+                            {errors.bathrooms && <p className="text-sm text-red-500">{errors.bathrooms.message}</p>}
+                        </div>
+                    </>
+                )}
 
                 <div className="space-y-2">
                     <Label htmlFor="area">Area (sqft)</Label>

@@ -56,6 +56,8 @@ export default async function LandingPage() {
             <Link href="#" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Houses</Link>
             <span>•</span>
             <Link href="#" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Offices</Link>
+            <span>•</span>
+            <Link href="#" className="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">Land</Link>
           </div>
         </div>
       </section>

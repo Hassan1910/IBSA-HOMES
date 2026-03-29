@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { createBooking } from '@/actions/bookings'
 
-export default function BookingForm({ propertyId, userId }: { propertyId: string, userId?: string }) {
+export default function BookingForm({ propertyId, userId, purpose = 'RENT' }: { propertyId: string, userId?: string, purpose?: string }) {
     const router = useRouter()
     const [date, setDate] = useState('')
     const [visitorName, setVisitorName] = useState('')
@@ -54,7 +54,7 @@ export default function BookingForm({ propertyId, userId }: { propertyId: string
 
     return (
         <div className="bg-card text-card-foreground p-6 rounded-lg shadow-md border border-border">
-            <h3 className="text-xl font-semibold mb-4">Book a Viewing</h3>
+            <h3 className="text-xl font-semibold mb-4">{purpose === 'SALE' ? 'Inquire to Buy' : 'Book a Viewing'}</h3>
             {message && (
                 <div className={`p-3 rounded mb-4 text-sm ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                     {message.text}
@@ -101,7 +101,7 @@ export default function BookingForm({ propertyId, userId }: { propertyId: string
                 )}
 
                 <Button type="submit" className="w-full" disabled={loading}>
-                    {loading ? 'Submitting...' : 'Request Booking'}
+                    {loading ? 'Submitting...' : (purpose === 'SALE' ? 'Send Inquiry' : 'Request Booking')}
                 </Button>
             </form>
         </div>

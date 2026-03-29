@@ -62,8 +62,13 @@ export default async function PropertyDetailsPage({ params }: PropertyDetailsPag
                                 className="object-cover"
                                 priority
                             />
-                            <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 text-sm font-bold rounded uppercase shadow-md">
-                                {property.status}
+                            <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
+                                <span className="bg-primary text-primary-foreground px-3 py-1 text-sm font-bold rounded uppercase shadow-md">
+                                    {property.status}
+                                </span>
+                                <span className="bg-secondary text-secondary-foreground px-3 py-1 text-sm font-bold rounded uppercase shadow-md">
+                                    {property.type}
+                                </span>
                             </div>
                         </div>
 
@@ -74,21 +79,27 @@ export default async function PropertyDetailsPage({ params }: PropertyDetailsPag
                                     <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{property.address}</p>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-3xl font-bold text-primary">{formatPrice(property.price)}<span className="text-muted-foreground text-lg font-normal">/mo</span></p>
+                                    <p className="text-3xl font-bold text-primary">{formatPrice(property.price)}
+                                        {property.purpose === 'RENT' && <span className="text-muted-foreground text-lg font-normal">/mo</span>}
+                                    </p>
                                 </div>
                             </div>
                         </div>
 
                         <div className="border-t border-border px-4 py-5 sm:px-6">
                             <dl className="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-3">
-                                <div className="sm:col-span-1">
-                                    <dt className="text-sm font-medium text-muted-foreground">Bedrooms</dt>
-                                    <dd className="mt-1 text-lg text-foreground">{property.bedrooms}</dd>
-                                </div>
-                                <div className="sm:col-span-1">
-                                    <dt className="text-sm font-medium text-muted-foreground">Bathrooms</dt>
-                                    <dd className="mt-1 text-lg text-foreground">{property.bathrooms}</dd>
-                                </div>
+                                {property.type !== 'LAND' && (
+                                    <>
+                                        <div className="sm:col-span-1">
+                                            <dt className="text-sm font-medium text-muted-foreground">Bedrooms</dt>
+                                            <dd className="mt-1 text-lg text-foreground">{property.bedrooms}</dd>
+                                        </div>
+                                        <div className="sm:col-span-1">
+                                            <dt className="text-sm font-medium text-muted-foreground">Bathrooms</dt>
+                                            <dd className="mt-1 text-lg text-foreground">{property.bathrooms}</dd>
+                                        </div>
+                                    </>
+                                )}
                                 <div className="sm:col-span-1">
                                     <dt className="text-sm font-medium text-muted-foreground">Area</dt>
                                     <dd className="mt-1 text-lg text-foreground">{property.area ? `${property.area} sqft` : 'N/A'}</dd>
@@ -124,7 +135,7 @@ export default async function PropertyDetailsPage({ params }: PropertyDetailsPag
                 {/* Sidebar */}
                 <div className="space-y-8">
                     {/* Booking Form */}
-                    <BookingForm propertyId={property.id} userId={session?.user?.id} />
+                    <BookingForm propertyId={property.id} userId={session?.user?.id} purpose={property.purpose} />
 
                     {/* Agent Section */}
                     {property.agent ? (

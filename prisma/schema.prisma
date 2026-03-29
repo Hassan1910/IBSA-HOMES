@@ -17,6 +17,18 @@ enum UserRole {
   BOOKING_OFFICER
 }
 
+enum PropertyType {
+  APARTMENT
+  HOUSE
+  OFFICE
+  LAND
+}
+
+enum PropertyPurpose {
+  RENT
+  SALE
+}
+
 model Organization {
   id                 String   @id @default(uuid())
   name               String
@@ -65,9 +77,11 @@ model Property {
   description    String?
   address        String
   price          Decimal
-  status         String   @default("AVAILABLE") // AVAILABLE, RENTED, MAINTAINANCE
-  bedrooms       Int
-  bathrooms      Int
+  status         String          @default("AVAILABLE") // AVAILABLE, RENTED, MAINTAINANCE
+  type           PropertyType    @default(APARTMENT)
+  purpose        PropertyPurpose @default(RENT)
+  bedrooms       Int             @default(0)
+  bathrooms      Int             @default(0)
   area           Float?
   images         String[] // Store URLs
   

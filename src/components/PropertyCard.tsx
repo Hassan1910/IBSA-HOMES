@@ -25,8 +25,13 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
-                <div className="absolute top-2 right-2 bg-zinc-900 dark:bg-zinc-800 text-white px-2 py-1 text-xs font-bold rounded uppercase tracking-wider backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
-                    {property.status}
+                <div className="absolute top-2 right-2 flex flex-col items-end gap-1">
+                    <span className="bg-zinc-900 dark:bg-zinc-800 text-white px-2 py-1 text-xs font-bold rounded uppercase tracking-wider backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
+                        {property.status}
+                    </span>
+                    <span className="bg-primary/90 text-white px-2 py-1 text-xs font-bold rounded uppercase tracking-wider backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
+                        {property.type}
+                    </span>
                 </div>
             </div>
             <div className="p-4">
@@ -43,22 +48,26 @@ export default function PropertyCard({ property }: PropertyCardProps) {
                 <div className="mt-4 flex items-center justify-between">
                     <span className="text-xl font-bold text-zinc-900">
                         {formatPrice(property.price)}
-                        <span className="text-gray-500 text-sm font-normal">/mo</span>
+                        {property.purpose === 'RENT' && <span className="text-gray-500 text-sm font-normal">/mo</span>}
                     </span>
                 </div>
                 <div className="mt-4 flex items-center text-gray-500 text-sm space-x-4">
-                    <div className="flex items-center">
-                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
-                        {property.bedrooms} Beds
-                    </div>
-                    <div className="flex items-center">
-                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                        </svg>
-                        {property.bathrooms} Baths
-                    </div>
+                    {property.type !== 'LAND' && (
+                        <>
+                            <div className="flex items-center">
+                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                                {property.bedrooms} Beds
+                            </div>
+                            <div className="flex items-center">
+                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                                {property.bathrooms} Baths
+                            </div>
+                        </>
+                    )}
                     {property.area && (
                         <div className="flex items-center">
                             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
